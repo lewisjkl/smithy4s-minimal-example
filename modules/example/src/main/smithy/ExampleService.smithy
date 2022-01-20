@@ -4,22 +4,27 @@ use smithy4s.api#simpleRestJson
 
 @simpleRestJson
 service HelloWorldService {
-  version: "1",
+  version: "1.0.0",
   operations: [Hello]
 }
 
-@http(method: "POST", uri: "/hello", code: 200)
+@http(method: "POST", uri: "/{name}", code: 200)
 operation Hello {
-  input: HelloInput,
+  input: Person,
   output: Greeting
 }
 
-structure HelloInput {
+
+structure Person {
+  @httpLabel
   @required
-  name: String
+  name: String,
+
+  @httpQuery("town")
+  town: String
 }
 
 structure Greeting {
   @required
-  greeting: String
+  message: String
 }

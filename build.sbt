@@ -1,6 +1,6 @@
-ThisBuild / scalaVersion := "2.13.8"
-
 import smithy4s.codegen.Smithy4sCodegenPlugin
+
+ThisBuild / scalaVersion := "2.13.8"
 
 val example = project
   .in(file("modules/example"))
