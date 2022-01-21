@@ -6,6 +6,7 @@ import org.http4s.ember.server._
 import org.http4s._
 import com.comcast.ip4s._
 import smithy4s.http4s.SimpleRestJsonBuilder
+import org.http4s.ember.client.EmberClientBuilder
 
 object HelloWorldImpl extends HelloWorldService[IO] {
   def hello(name: String, town: Option[String]): IO[Greeting] = IO.pure {
@@ -24,6 +25,23 @@ object Routes {
     smithy4s.http4s.swagger.docs[IO](HelloWorldService)
 
   val all: Resource[IO, HttpRoutes[IO]] = example.map(_ <+> docs)
+}
+
+object ClientImpl {
+
+  val helloWorldClient: Resource[IO, HelloWorldService[IO]] = for {
+    client <- EmberClientBuilder.default[IO].build
+    helloClient <- SimpleRestJsonBuilder(HelloWorldService).clientResource(
+      client,
+      Uri.unsafeFromString("http://localhost")
+    )
+  } yield helloClient
+
+  val exampleClientUsage = helloWorldClient.use(c =>
+    c.hello("Sam", Some("New York City"))
+      .flatMap(greeting => IO.println(greeting.message))
+  )
+
 }
 
 object Main extends IOApp.Simple {
