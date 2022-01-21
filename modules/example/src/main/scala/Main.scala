@@ -27,17 +27,17 @@ object Routes {
   val all: Resource[IO, HttpRoutes[IO]] = example.map(_ <+> docs)
 }
 
-object ClientImpl {
+object ClientImpl extends IOApp.Simple {
 
   val helloWorldClient: Resource[IO, HelloWorldService[IO]] = for {
     client <- EmberClientBuilder.default[IO].build
     helloClient <- SimpleRestJsonBuilder(HelloWorldService).clientResource(
       client,
-      Uri.unsafeFromString("http://localhost")
+      Uri.unsafeFromString("http://localhost:9000")
     )
   } yield helloClient
 
-  val exampleClientUsage = helloWorldClient.use(c =>
+  val run = helloWorldClient.use(c =>
     c.hello("Sam", Some("New York City"))
       .flatMap(greeting => IO.println(greeting.message))
   )
