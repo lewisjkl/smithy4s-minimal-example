@@ -5,7 +5,6 @@ import org.http4s.implicits._
 import org.http4s.ember.server._
 import org.http4s._
 import com.comcast.ip4s._
-import smithy4s.http4s._
 import smithy4s.http4s.SimpleRestJsonBuilder
 import org.http4s.ember.client.EmberClientBuilder
 
@@ -32,7 +31,7 @@ object ClientImpl extends IOApp.Simple {
 
   val helloWorldClient: Resource[IO, HelloWorldService[IO]] = for {
     client <- EmberClientBuilder.default[IO].build
-    helloClient <- HelloWorldService.simpleRestJson
+    helloClient <- SimpleRestJsonBuilder(HelloWorldService)
       .client(
         client
       )
